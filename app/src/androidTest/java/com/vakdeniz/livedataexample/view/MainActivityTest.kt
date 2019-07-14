@@ -20,11 +20,11 @@ class MainActivityTest {
     val rule = ActivityTestRule(MainActivity::class.java)
 
     @Test
-    @Throws(Exception::class)
     fun isSwipeLayoutDisplayed() {
         onView(withId(R.id.swiperefresh)).check(matches(isDisplayed()))
     }
 
+    @Test
     fun isRecyclerViewDisplayed(){
         onView(withId(R.id.blogRecyclerView)).check(matches(isDisplayed()))
     }
