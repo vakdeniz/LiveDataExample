@@ -10,7 +10,6 @@ import com.vakdeniz.livedataexample.R
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.Exception
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -21,7 +20,7 @@ class MainActivityTest {
 
     @Test
     fun isSwipeLayoutDisplayed() {
-        onView(withId(R.id.swiperefresh)).check(matches(isDisplayed()))
+        onView(withId(R.id.swipeRefresh)).check(matches(isDisplayed()))
     }
 
     @Test

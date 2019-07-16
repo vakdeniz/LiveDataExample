@@ -24,12 +24,12 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         getPopularBlog()
-        swiperefresh.setOnRefreshListener { getPopularBlog() }
+        swipeRefresh.setOnRefreshListener { getPopularBlog() }
 
     }
 
     private fun getPopularBlog() {
-        swiperefresh.isRefreshing = false
+        swipeRefresh.isRefreshing = false
         mainViewModel.allBlog.observe(this, Observer { blogList ->
             if (blogList != null) prepareRecyclerView(blogList)
         })
