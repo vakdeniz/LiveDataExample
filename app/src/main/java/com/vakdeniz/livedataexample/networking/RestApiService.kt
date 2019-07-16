@@ -14,7 +14,7 @@ interface RestApiService {
 
     companion object {
 
-        private const val BASE_URL = "https://androidwave.com"
+        private const val BASE_URL = "https://androidwave.com/"
 
         fun init(): RestApiService {
             return Retrofit.Builder()
