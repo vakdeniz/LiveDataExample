@@ -1,45 +1,45 @@
 package com.vakdeniz.livedataexample.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.vakdeniz.livedataexample.model.Blog
-import com.vakdeniz.livedataexample.networking.RestApiService
+import com.vakdeniz.livedataexample.model.BlogWrapper
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 
-class BlogRepository {
+class BlogRepository(private val restApiService: Deferred<BlogWrapper>) {
 
-    private var movies = mutableListOf<Blog>()
-    private var mutableLiveData = MutableLiveData<List<Blog>>()
+    var popularBlogsMutableLiveData = MutableLiveData<PopularBlogsResult>()
     val completableJob = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + completableJob)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + completableJob)
 
-    fun getMutableLiveData(): MutableLiveData<List<Blog>> {
+    fun getPopularBlogsCoroutineCall() {
         coroutineScope.launch {
-            val request = RestApiService.init().getPopularBlogAsync()
-            withContext(Dispatchers.Main) {
-                try {
-
-                    val response = request.await()
-                    if (response.blog != null) {
-                        movies = response.blog as MutableList<Blog>
-                        mutableLiveData.value = movies
-                    } else {
-                        Log.d("vakdeniz-hata- if-else", "response.blog null")
-                    }
-
-                } catch (e: HttpException) {
-                    // Log exception //
-                    Log.d("vakdeniz-hata - http", e.message())
-                } catch (e: Throwable) {
-                    // Log error //)
-                    Log.d("vakdeniz-hata - try", e.message)
-
+            popularBlogsMutableLiveData.value = PopularBlogsResult.PopularBlogsLoading()
+            try {
+                val request = restApiService
+                withContext(Dispatchers.Main) {
+                    popularBlogsMutableLiveData.value =
+                        request.await().blog?.let {
+                            PopularBlogsResult.PopularBlogsSuccess(it)
+                        }
                 }
-
+            } catch (e: Throwable) {
+                popularBlogsMutableLiveData.value.apply {
+                    PopularBlogsResult.PopularBlogsFail(e.localizedMessage)
+                }
+            } catch (e: HttpException) {
+                popularBlogsMutableLiveData.value.apply {
+                    PopularBlogsResult.PopularBlogsFail(e.message())
+                }
             }
         }
-        return mutableLiveData
     }
 
+}
+
+
+sealed class PopularBlogsResult {
+    data class PopularBlogsSuccess(val mutableBlogList: MutableList<Blog>) : PopularBlogsResult()
+    data class PopularBlogsFail(val e: String) : PopularBlogsResult()
+    class PopularBlogsLoading : PopularBlogsResult()
 }

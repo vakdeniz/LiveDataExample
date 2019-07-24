@@ -1,13 +1,14 @@
 package com.vakdeniz.livedataexample.viewmodel
 
-import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.vakdeniz.livedataexample.model.Blog
+import com.vakdeniz.livedataexample.networking.RestApiService
 
-class MainViewModel: ViewModel() {
+class MainViewModel : ViewModel() {
 
-    private val movieRepository = BlogRepository()
-    val allBlog: LiveData<List<Blog>> get() = movieRepository.getMutableLiveData()
+    private val movieRepository = BlogRepository(RestApiService.init().getPopularBlogAsync())
+    val allMutableBlogs: MutableLiveData<PopularBlogsResult>? =
+        movieRepository.popularBlogsMutableLiveData.also { movieRepository.getPopularBlogsCoroutineCall() }
 
     override fun onCleared() {
         super.onCleared()
