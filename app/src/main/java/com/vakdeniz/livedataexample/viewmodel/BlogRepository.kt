@@ -1,6 +1,6 @@
 package com.vakdeniz.livedataexample.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.vakdeniz.livedataexample.model.Blog
 import com.vakdeniz.livedataexample.model.BlogWrapper
 import kotlinx.coroutines.*
